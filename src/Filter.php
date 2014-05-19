@@ -38,15 +38,21 @@ class Filter extends \Phalcon\Filter
     private function dateToArrayFilter()
     {
         $this->add('dateToArray', function($value) {
-            if ($value) {
-                $dateArray = explode('-', $value);
-                
-                $value = array();
-                $value['year'] = $dateArray[0];
-                $value['month'] = $dateArray[1];
-                $value['day'] = $dateArray[2];
+            try {
+                if ($value) {
+                    $dateTime = new \DateTime($value);
+
+                    $dateArray = array();
+                    $dateArray['year'] = $dateTime->format('Y');
+                    $dateArray['month'] = $dateTime->format('m');
+                    $dateArray['day'] = $dateTime->format('d');
+
+                    return $dateArray;
+                }
+            } catch(\Exception $ex) {
+                // break silently
             }
-            
+
             return $value;
         });
     }
