@@ -1,2 +1,2 @@
-Vegas CMF Filter lib
-======================
+Vegas CMF Filter
+================
