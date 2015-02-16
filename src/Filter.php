@@ -17,6 +17,7 @@ class Filter extends \Phalcon\Filter
     {
         $this->dateToTimestampFilter();
         $this->dateToArrayFilter();
+        $this->priceToIntFilter();
     }
 
     private function dateToTimestampFilter()
@@ -54,6 +55,16 @@ class Filter extends \Phalcon\Filter
             }
 
             return $value;
+        });
+    }
+
+    private function priceToIntFilter()
+    {
+        $this->add('priceToInt', function($value) {
+            $price = str_replace([',', ' '], ['.', ''], $value);
+            $price = $price*100;
+
+            return (int)$price;
         });
     }
 }
