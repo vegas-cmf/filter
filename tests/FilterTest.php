@@ -74,6 +74,10 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $value = $this->filter->sanitize($price, 'priceToInt');
         $this->assertEquals(99, $value);
 
+        $price = '0,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(99, $value);
+
         $price = '1234.99';
         $value = $this->filter->sanitize($price, 'priceToInt');
         $this->assertEquals(123499, $value);
@@ -83,6 +87,26 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(123499, $value);
 
         $price = '1 234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1.234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '$ 1 234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '$ 1.234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1 234,99 $';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1.234,99 $';
         $value = $this->filter->sanitize($price, 'priceToInt');
         $this->assertEquals(123499, $value);
     }
