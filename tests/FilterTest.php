@@ -62,4 +62,102 @@ class FilterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($dateArray[1], $value['month']);
         $this->assertEquals($dateArray[2], $value['day']);
     }
+
+    public function testPriceToInt()
+    {
+        $nonPrice = 'some random data';
+
+        $value = $this->filter->sanitize($nonPrice, 'priceToInt');
+        $this->assertEquals(0, $value);
+
+        $price = '0.99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(99, $value);
+
+        $price = '0,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(99, $value);
+
+        $price = '1234.99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1 234.99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1 234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1.234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '$ 1 234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '$ 1.234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1 234,99 $';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '1.234,99 $';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(123499, $value);
+
+        $price = '-0.99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-99, $value);
+
+        $price = '-0,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-99, $value);
+
+        $price = '-1234.99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        $price = '-1 234.99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        $price = '-1 234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        $price = '-1.234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        $price = '$ -1 234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        $price = '$ -1.234,99';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        $price = '-1 234,99 $';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        $price = '-1.234,99 $';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123499, $value);
+
+        // minus in the middle of number will be not removed correctly
+        $price = '-1 234,-99 $';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(-123400, $value);
+
+        // not possible to pass two "minus" signs
+        $price = '--1.234,99 $';
+        $value = $this->filter->sanitize($price, 'priceToInt');
+        $this->assertEquals(0, $value);
+    }
 }
