@@ -61,16 +61,17 @@ class Filter extends \Phalcon\Filter
     private function priceToIntFilter()
     {
         $this->add('priceToInt', function($value) {
-            $price = 0;
-            $dotRegEx = '/^[^\,0-9]*([0-9 ,]*\.[0-9]*)[^\,0-9]*$/';
-            $commaRegEx = '/^[^\.0-9]*([0-9 .]*\,[0-9]*)[^\.0-9]*$/';
 
-            if (preg_match($dotRegEx, $value)) {
-                $price = preg_replace($dotRegEx, '$1', $value);
-                $price = str_replace([' ', ','], ['', ''], $price);
-            } elseif (preg_match($commaRegEx, $value)) {
-                $price = preg_replace($commaRegEx, '$1', $value);
-                $price = str_replace([' ', '.', ','], ['', '', '.'], $price);
+            $dotPrice = false;
+
+            if (strpos($value, '.') > strpos($value, ',')) {
+                $dotPrice = true;
+            }
+
+            if ($dotPrice) {
+                $price = preg_replace(['/[^0-9\,\.\-]/', '/\,/'], ['', ''], $value);
+            } else {
+                $price = preg_replace(['/[^0-9\,\.\-]/', '/\./', '/\,/'], ['', '', '.'], $value);;
             }
 
             $price = $price*100;
