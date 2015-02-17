@@ -62,11 +62,7 @@ class Filter extends \Phalcon\Filter
     {
         $this->add('priceToInt', function($value) {
 
-            $dotPrice = false;
-
-            if (strpos($value, '.') > strpos($value, ',')) {
-                $dotPrice = true;
-            }
+            $dotPrice = strpos($value, '.') > strpos($value, ',');
 
             if ($dotPrice) {
                 $price = preg_replace(['/[^0-9\,\.\-]/', '/\,/'], ['', ''], $value);
